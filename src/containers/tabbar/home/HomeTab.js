@@ -120,12 +120,14 @@ const HomeTab = () => {
                     style={{
                       fontSize: 14,
                       marginTop: 10,
+                      color:"#000"
                     }}>
                     {item.title}
                   </Text>
                   <Text
                     style={{
                       fontSize: 12,
+                      color:"#000"
                     }}>
                     {item.author}
                   </Text>

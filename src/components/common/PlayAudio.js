@@ -15,9 +15,9 @@ const PlayAudio = () => {
 
   const pauseOnUnmount = async () => {
     // Pause and reset the current track when the component is unmounted
-      await TrackPlayer.pause();
-      setIsPlayingArray(Array(listData.length).fill(false));
-      setCurrentTrackIndex(null);
+    await TrackPlayer.pause();
+    setIsPlayingArray(Array(listData.length).fill(false));
+    setCurrentTrackIndex(null);
   }
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const PlayAudio = () => {
               <View style={styles.cardTopRow}>
                 <View style={styles.halrow}>
                   <View style={{ flexDirection: 'column' }}>
-                    <Text style={styles.head}>{item.title}</Text>
+                    <Text style={styles.titleText}>{item.title}</Text>
                   </View>
                 </View>
               </View>
@@ -116,6 +116,8 @@ const PlayAudio = () => {
                       minimumValue={0}
                       thumbStyle={{ width: 20, height: 20 }}
                       thumbTintColor={'black'}
+                      minimumTrackTintColor={'black'}
+                      maximumTrackTintColor={'black'}
                       onValueChange={async (value) => {
                         await TrackPlayer.seekTo(value);
                       }}
@@ -126,6 +128,8 @@ const PlayAudio = () => {
                       minimumValue={0}
                       thumbStyle={{ width: 20, height: 20 }}
                       thumbTintColor={'black'}
+                      minimumTrackTintColor={'black'}
+                      maximumTrackTintColor={'black'}
                       onValueChange={async (value) => await TrackPlayer.seekTo(value)}
                     />
                   )}
@@ -149,9 +153,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   titleText: {
-    fontSize: 22,
-    textAlign: 'center',
-    fontWeight: 'bold',
+    color: '#000'
   },
   textStyle: {
     flex: 1,
