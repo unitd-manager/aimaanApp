@@ -37,11 +37,38 @@ export default function StackNavigation() {
         name={StackNav.DetailScreen}
         component={StackRoute.DetailScreen}
       />
-      
-      {/* <Stack.Screen
-        name={StackNav.onBoarding}
-        component={StackRoute.OnBoarding}
-      /> */}
+       <Stack.Screen
+        name={StackNav.Educational}
+        component={StackRoute.Educational}
+      />
+      <Stack.Screen
+        name={StackNav.Religious}
+        component={StackRoute.Religious}
+      />
+      <Stack.Screen
+        name={StackNav.Social}
+        component={StackRoute.Social}
+      />
+       <Stack.Screen
+        name={StackNav.AimanBaithulmal}
+        component={StackRoute.AimanBaithulmal}
+      />
+       <Stack.Screen
+        name={StackNav.Gallery}
+        component={StackRoute.Gallery}
+      />
+        <Stack.Screen
+        name={StackNav.News}
+        component={StackRoute.News}
+      />
+      <Stack.Screen
+        name={StackNav.Events}
+        component={StackRoute.Events}
+      />
+      <Stack.Screen
+        name={StackNav.QuranPlayer}
+        component={StackRoute.QuranPlayer}
+      />
     </Stack.Navigator>
   );
 }

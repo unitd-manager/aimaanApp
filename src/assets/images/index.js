@@ -5,4 +5,5 @@ export default {
   quran1: require('../images/quran1.jpeg'),
   quran2: require('../images/quran2.jpeg'),
   banner: require('../images/banner.png'),
+  audio: require('../images/audio.png'),
 };

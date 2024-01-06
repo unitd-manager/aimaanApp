@@ -5,6 +5,13 @@ export const StackNav = {
   AudioFiles: 'AudioFiles',
   ListScreen:'ListScreen',
   DetailScreen: 'DetailScreen',
-  Music: 'Music'
-  // onBoarding: 'onBoarding',
+  Music: 'Music',
+  Educational: 'Educational',
+  Religious: 'Religious',
+  Social: 'Social',
+  AimanBaithulmal: 'AimanBaithulmal',
+  Gallery: 'Gallery',
+  News: 'News',
+  Events:'Events',
+  QuranPlayer: 'QuranPlayer'
 };

@@ -1,27 +1,16 @@
-import React, { useEffect } from 'react';
-import {
-    StyleSheet,
-    SafeAreaView,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet, SafeAreaView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import EHeader from '../../../components/common/EHeader';
 import PlayAudio from '../../../components/common/PlayAudio';
-import TrackPlayer from 'react-native-track-player';
 
 const ListScreen = () => {
-    const route = useRoute();
     const navigation = useNavigation()
-    // useEffect(() => {
-    //     return () => {
-    //       console.log('Cleanup function executed');
-    //       TrackPlayer.stop();
-    //     };
-    // }, []);
-
+   
     return (
 
         <SafeAreaView style={styles.container}>
-            <EHeader title={route.params.title} onPress={() => navigation.pop()} />
+            <EHeader title="Audio Gallery" onPress={() => navigation.pop()} />
             <PlayAudio />
         </SafeAreaView>
     );

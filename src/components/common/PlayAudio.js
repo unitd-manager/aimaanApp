@@ -4,7 +4,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import TrackPlayer, { useProgress, Event } from 'react-native-track-player';
 import { moderateScale } from '../../common/constants';
 import { listData } from '../../api/constant';
-import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 const PlayAudio = () => {
   const [isPlayingArray, setIsPlayingArray] = useState(Array(listData.length).fill(false));
@@ -153,7 +152,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   titleText: {
-    color: '#000'
+    color: '#117a4c',
+    fontWeight:'700'
   },
   textStyle: {
     flex: 1,

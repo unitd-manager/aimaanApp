@@ -169,69 +169,12 @@ const bannerData = [
   },
 ];
 
-const popularEventData = [
+const menus = [
   {
     id: 1,
-    image: images.users75,
-    titleEn: 'About Us',
-    titleTm: 'எங்களைப் பற்றி',
-    url: ''
-  },
-  {
-    id: 2,
-    image: images.speech,
-    titleEn: 'Bayan',
-    titleTm: 'பயான்கள்',
-    url: ''
-  },
-  {
-    id: 3,
-    image: images.reading64,
-    titleEn: 'Mawlid Majlis',
-    titleTm: 'மௌலித் மஜ்லிஸ்கள்',
-    url: ''
-  },
-  {
-    id: 4,
-    image: images.events,
-    titleEn: 'Events',
-    titleTm: 'நிகழ்வுகள்',
-    url: ''
-  },
-  {
-    id: 5,
-    image: images.magazines,
-    titleEn: 'Magazine',
-    titleTm: 'மலர்கள்',
-    url: ''
-  },
-  {
-    id: 6,
-    image: images.videogallerys,
-    titleEn: 'Video Gallery',
-    titleTm: 'காணொளிகள்',
-    url: ''
-  },
-  {
-    id: 7,
-    image: images.photogallerys,
-    titleEn: 'Photo Gallery',
-    titleTm: 'புகைப்படங்கள்',
-    url: ''
-  },
-  {
-    id: 8,
-    image: images.audiogallerys,
+    image: images.audio,
     titleEn: 'Audio Gallery',
-    titleTm: 'ஆடியோக்கள்',
-    url: ''
-  },
-  {
-    id: 9,
-    image: images.books,
-    titleEn: 'Books',
-    titleTm: 'கிதாபுகள்',
-    url: ''
+    routes: 'ListScreen'
   },
 ];
 
@@ -239,7 +182,7 @@ const listData = [
   {
       id: '1',
       url: require('../assets/audios/Al_Falaq_The_Dawn.mp3'),
-      artwork: require('../assets/images/ArtsCulture.jpg'),
+      // artwork: require('../assets/images/ArtsCulture.jpg'),
       title: 'Al Falaq The Dawn',
       category: 'Arts & Culture',
       artist: 'Mesut Kurtis',
@@ -248,7 +191,7 @@ const listData = [
   {
       id: '2',
       url: require('../assets/audios/Al_Ikhlas_The_Unity.mp3'),
-      artwork: require('../assets/images/hqdefault.jpg'),
+      // artwork: require('../assets/images/hqdefault.jpg'),
       title: 'Al Ikhlas The Unity',
       category: 'Arts & Culture',
       artist: 'Ahmed Bukhatir',
@@ -258,7 +201,7 @@ const listData = [
   {
       id: '3',
       url: require('../assets/audios/Al_Kafirun_The_Disbelievers.mp3'),
-      artwork: require('../assets/images/hqdefault1.jpg'),
+      // artwork: require('../assets/images/hqdefault1.jpg'),
       title: 'Al Kafirun The Disbelievers',
       category: 'Arts & Culture',
       artist: 'Maher Zain',
@@ -267,7 +210,7 @@ const listData = [
   {
       id: '4',
       url: require('../assets/audios/Al_Kauthar_The_Abundance_of_Good.mp3'),
-      artwork: require('../assets/images/ArtsCulture.jpg'),
+      // artwork: require('../assets/images/ArtsCulture.jpg'),
       title: 'Al Kauthar The Abundance of Good',
       category: 'Arts & Culture',
       artist: 'Mesut Kurtis',
@@ -276,7 +219,7 @@ const listData = [
   {
       id: '5',
       url: require('../assets/audios/Al_Lahab_The_Flame.mp3'),
-      artwork: require('../assets/images/hqdefault.jpg'),
+      // artwork: require('../assets/images/hqdefault.jpg'),
       title: 'Al Lahab The Flame',
       category: 'Arts & Culture',
       artist: 'Ahmed Bukhatir',
@@ -285,7 +228,7 @@ const listData = [
   {
       id: '6',
       url: require('../assets/audios/Al_Quraish_The_Quraish.mp3'),
-      artwork: require('../assets/images/hqdefault1.jpg'),
+      // artwork: require('../assets/images/hqdefault1.jpg'),
       title: 'Al Quraish The Quraish',
       category: 'Arts & Culture',
       artist: 'Maher Zain',
@@ -294,7 +237,7 @@ const listData = [
   {
     id: '7',
     url: require('../assets/audios/Al-Asr-The-Time.mp3'),
-    artwork: require('../assets/images/hqdefault1.jpg'),
+    // artwork: require('../assets/images/hqdefault1.jpg'),
     title: 'Al Asr The Time',
     category: 'Arts & Culture',
     artist: 'Maher Zain',
@@ -303,7 +246,7 @@ const listData = [
 {
   id: '8',
   url: require('../assets/audios/An_Nas_The_Men.mp3'),
-  artwork: require('../assets/images/hqdefault1.jpg'),
+  // artwork: require('../assets/images/hqdefault1.jpg'),
   title: 'An Nas The Men',
   category: 'Arts & Culture',
   artist: 'Maher Zain',
@@ -312,7 +255,7 @@ const listData = [
 {
   id: '9',
   url: require('../assets/audios/An_Nasr_The_Help.mp3'),
-  artwork: require('../assets/images/hqdefault1.jpg'),
+  // artwork: require('../assets/images/hqdefault1.jpg'),
   title: 'An Nasr The Help',
   category: 'Arts & Culture',
   artist: 'Maher Zain',
@@ -323,7 +266,7 @@ const listData = [
 export {
   ProfileSetting,
   languageData,
-  popularEventData,
   bannerData,
-  listData
+  listData,
+  menus
 };

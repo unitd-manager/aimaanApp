@@ -1,26 +1,15 @@
-import { StyleSheet, View, ImageBackground, TextInput} from 'react-native';
-import React, {useState,useCallback} from 'react';
+import { StyleSheet, View, ImageBackground } from 'react-native';
+import React from 'react';
 import {useSelector} from 'react-redux';
-
-// custom imports
 import {styles} from '../../themes';
 import EText from '../common/EText';
 import {moderateScale} from '../../common/constants';
 import images from '../../assets/images';
-import SearchComponent from './SearchComponent';
 import LinearGradient from 'react-native-linear-gradient';
 
 function HomeHeader() {
 
   const colors = useSelector(state => state.theme.theme);
-  const [inputValue, setInputValue] = useState('');
-
-  const handleInputChange = (text) => {
-    setInputValue(text);
-  };
-
-  // const [search, setSearch] = useState('search');
-  // const onSearchInput = useCallback(text => setSearch(text), []);
 
   return (
     <ImageBackground
@@ -39,20 +28,10 @@ function HomeHeader() {
         <EText type="m20" numberOfLines={1} color={colors.white}>
          Welcome to Aiman
          </EText> 
-         {/* <SearchComponent search={search} onSearchInput={onSearchInput} /> */}
-
-         <TextInput
-        style={localStyles.input}
-        placeholder="Search here..."
-        value={inputValue}
-        onChangeText={handleInputChange}
-      />
-
       </View>
     </View>
     </LinearGradient>
   </ImageBackground>
-
   );
 }
 

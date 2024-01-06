@@ -4,23 +4,14 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-
-// Custom Imports
-import { commonColor, styles } from '../../themes';
+import { useNavigation } from '@react-navigation/native';import { commonColor, styles } from '../../themes';
 import { deviceWidth, moderateScale } from '../../common/constants';
 import EText from '../common/EText';
 
 export default function SmallCardComponent({ item, index }) {
   const navigation = useNavigation();
-
+  
   const [englishTitle, tamilTitle] = (item?.section_title || '').split(' / ');
-
-  // const onPressDetail = () => {
-  //   if (item.routes === 'ViewDetails') {
-  //     navigation.navigate('ViewDetails', { title: englishTitle }); 
-  //   }
-  // };
 
   return (
     <>
@@ -35,19 +26,15 @@ export default function SmallCardComponent({ item, index }) {
         onPress={() => navigation.navigate(item.routes, { title: englishTitle })}
       >
         <View style={{borderWidth:1, borderColor: '#CBCBCB', borderRadius: moderateScale(100), padding:10 }}>
-          <Image
-            source={{
-              uri: `http://43.228.126.245/aimaanAPI/storage/uploads/${item?.file_name}`,
-            }}
-            style={localStyles.imageStyle}
+          <Image source={item.image} style={localStyles.imageStyle}
           />
         </View>
         <EText
           type={'S16'}
-          numberOfLines={1}
+          numberOfLines={2}
           style={localStyles.textStyle}
         >
-          {englishTitle}
+          {item.titleEn}
         </EText>
       </TouchableOpacity>
     </>
@@ -56,7 +43,6 @@ export default function SmallCardComponent({ item, index }) {
 
 const localStyles = StyleSheet.create({
   root: {
-    // ...styles.p5,
     ...styles.flex,
     ...styles.justifyCenter,
     width: (deviceWidth - moderateScale(120)) / 2 ,

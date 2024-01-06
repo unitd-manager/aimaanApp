@@ -9,10 +9,10 @@ return(
   <>
   <EHeader title={route.params.title}  />
   <View style={menuStyles.container}>
-    <Image
+    {/* <Image
         style={menuStyles.Img}
         source={require('../../../assets/images/splash.png')}
-      />
+      /> */}
   </View>
 </>
 )
