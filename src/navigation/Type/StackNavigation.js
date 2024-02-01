@@ -69,6 +69,26 @@ export default function StackNavigation() {
         name={StackNav.QuranPlayer}
         component={StackRoute.QuranPlayer}
       />
+      <Stack.Screen
+        name={StackNav.Services}
+        component={StackRoute.Services}
+      />
+      <Stack.Screen
+      name={StackNav.Articles}
+      component={StackRoute.Articles}
+    />
+    <Stack.Screen
+      name={StackNav.Home}
+      component={StackRoute.Home}
+    />
+    <Stack.Screen
+      name={StackNav.Resources}
+      component={StackRoute.Resources}
+    />
+    <Stack.Screen
+      name={StackNav.Membership}
+      component={StackRoute.Membership}
+    />
     </Stack.Navigator>
   );
 }

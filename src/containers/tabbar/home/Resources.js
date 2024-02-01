@@ -5,24 +5,24 @@ import EHeader from '../../../components/common/EHeader';
 import api from '../../../api/api';
 import HTMLView from 'react-native-htmlview';
 
-const QuranPlayer = () => {
-    const route = useRoute();
-    const navigation = useNavigation()
-    const [selectedItem, setSelectedItem] = React.useState();
+const Resources = () => {
+  const route = useRoute();
+  const navigation = useNavigation()
+  const [selectedItem, setSelectedItem] = React.useState();
 
-    useEffect(()=>{
-        api
-        .get('/content/getAudioGallery')
-        .then((res) => {
-          setSelectedItem(res.data.data);
-        })
-        .catch((error) => {
-          console.log('Error fetching client details by ID:', error);
-        });
-    },[route.params.id])
-   
-// Conditional rendering based on the state of selectedItem
-if (selectedItem === undefined) {
+  useEffect(() => {
+    api
+      .post('/content/getContentBySectionId', { section_id: route.params.id })
+      .then((res) => {
+        setSelectedItem(res.data.data);
+      })
+      .catch((error) => {
+        console.log('Error fetching client details by ID:', error);
+      });
+  }, [route.params.id])
+
+  // Conditional rendering based on the state of selectedItem
+  if (selectedItem === undefined) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -30,12 +30,12 @@ if (selectedItem === undefined) {
     );
   }
 
-// hide space and set image in about description 
+  // hide space and set image in about description 
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
 
     if (node.name === 'img') {
       const width = node.attribs.width || 300;
-      const height = node.attribs.height || 300;
+      const height = node.attribs.height || 150;
 
       const { src } = node.attribs;
 
@@ -76,15 +76,20 @@ if (selectedItem === undefined) {
     }
   };
 
-    return (
-        <>
-        <EHeader title={route.params.title} onPress={() => navigation.pop()} />
-        <ScrollView style={{paddingHorizontal:20}}>
-            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                <HTMLView value={selectedItem.description} renderNode={renderNode} />
-            </View>
-        </ScrollView>
-        </>
-    )
+  return (
+    <>
+      <EHeader title={route.params.title} onPress={() => navigation.pop()} />
+      <ScrollView style={{ paddingHorizontal: 20 }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <HTMLView value={selectedItem.map((item, index) => 
+            `<h4><b>${index+1}. ${item.title}</b></h4>
+            ${item.description}
+            \n`
+          )}
+            renderNode={renderNode} />
+        </View>
+      </ScrollView>
+    </>
+  )
 }
-export default QuranPlayer;
+export default Resources;

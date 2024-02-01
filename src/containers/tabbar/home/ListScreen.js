@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import EHeader from '../../../components/common/EHeader';
 import PlayAudio from '../../../components/common/PlayAudio';
@@ -11,7 +11,7 @@ const ListScreen = () => {
 
         <SafeAreaView style={styles.container}>
             <EHeader title="Audio Gallery" onPress={() => navigation.pop()} />
-            <PlayAudio />
+            <PlayAudio />           
         </SafeAreaView>
     );
 };

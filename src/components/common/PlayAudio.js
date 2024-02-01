@@ -1,21 +1,44 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, Slider, TouchableOpacity, View, ScrollView, AppState } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, Slider, TouchableOpacity, View, ScrollView, AppState, ActivityIndicator } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import TrackPlayer, { useProgress, Event } from 'react-native-track-player';
 import { moderateScale } from '../../common/constants';
-import { listData } from '../../api/constant';
+import api from '../../api/api';
 
 const PlayAudio = () => {
-  const [isPlayingArray, setIsPlayingArray] = useState(Array(listData.length).fill(false));
-  const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
-  const [progressArray, setProgressArray] = useState(Array(listData.length).fill({ position: 0, duration: 0 }));
+
+  const [listData, setListData] = useState()
+
+  const getMenus = () => {
+    api
+      .get('/content/getAudioGallery')
+      .then(res => {
+        const serverPath = 'http://43.228.126.245/aimaanAPI/storage/uploads/';
+        const audioData = res.data.data.map(item => ({
+          ...item,
+          url: serverPath + item.file_name,
+        }));
+        setListData(audioData);
+      })
+      .catch(error => {
+        console.log("error", error)
+      });
+
+  };
+  useEffect(() => {
+    getMenus();
+  }, []);
 
   const progress = useProgress();
+
+  const [isPlayingArray, setIsPlayingArray] = useState(Array(listData?.length).fill(false));
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(null);
+  const [progressArray, setProgressArray] = useState(Array(listData?.length).fill({ position: 0, duration: 0 }));
 
   const pauseOnUnmount = async () => {
     // Pause and reset the current track when the component is unmounted
     await TrackPlayer.pause();
-    setIsPlayingArray(Array(listData.length).fill(false));
+    setIsPlayingArray(Array(listData?.length).fill(false));
     setCurrentTrackIndex(null);
   }
 
@@ -42,13 +65,17 @@ const PlayAudio = () => {
     const setupPlayerAndAddTracks = async () => {
       await TrackPlayer.setupPlayer();
       await TrackPlayer.add(listData);
+      const initialState = await TrackPlayer.getState();
     };
-    setupPlayerAndAddTracks();
+
+    if (listData) {
+      setupPlayerAndAddTracks();
+    }
 
     return () => {
       TrackPlayer.pause();
     };
-  }, [])
+  }, [listData]);
 
   useEffect(() => {
     return () => pauseOnUnmount()
@@ -58,86 +85,101 @@ const PlayAudio = () => {
     const updatedIsPlayingArray = [...isPlayingArray];
     const isCurrentlyPlaying = currentTrackIndex === index;
 
-    if (isCurrentlyPlaying && updatedIsPlayingArray[index]) {
-      await TrackPlayer.pause();
-      updatedIsPlayingArray[index] = false;
-    } else {
-      if (currentTrackIndex !== null) {
-        updatedIsPlayingArray[currentTrackIndex] = false;
+    try {
+      if (isCurrentlyPlaying && updatedIsPlayingArray[index]) {
         await TrackPlayer.pause();
+        updatedIsPlayingArray[index] = false;
+      } else {
+        if (currentTrackIndex !== null) {
+          updatedIsPlayingArray[currentTrackIndex] = false;
+          await TrackPlayer.pause();
+        }
+
+        await TrackPlayer.skip(index);
+        await TrackPlayer.play();
+
+        updatedIsPlayingArray[index] = true;
+        setCurrentTrackIndex(index);
+        // Check TrackPlayer state after play
+        const state = await TrackPlayer.getState();
       }
-
-      await TrackPlayer.skip(index);
-      await TrackPlayer.play();
-
-      updatedIsPlayingArray[index] = true;
-      setCurrentTrackIndex(index);
+    } catch (error) {
+      console.error('Error playing track:', error);
     }
 
     setIsPlayingArray(updatedIsPlayingArray);
   };
 
+  useEffect(() => {
+    setProgressArray(Array(listData?.length).fill({ position: 0, duration: 0 }));
+  }, [listData]);
+
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <ScrollView style={{ flex: 1 }}>
-          {listData.map((item, index) => (
-            <View style={styles.singleContainer} key={index}>
-              <View style={styles.cardTopRow}>
-                <View style={styles.halrow}>
-                  <View style={{ flexDirection: 'column' }}>
-                    <Text style={styles.titleText}>{item.title}</Text>
+      {listData ? (
+        <View style={styles.container}>
+          <ScrollView style={{ flex: 1 }}>
+            {listData?.map((item, index) => (
+              <View style={styles.singleContainer} key={index}>
+                <View style={styles.cardTopRow}>
+                  <View style={styles.halrow}>
+                    <View style={{ flexDirection: 'column' }}>
+                      <Text style={styles.titleText}>{item?.file_name.slice(20)}</Text>
+                    </View>
+                  </View>
+                </View>
+
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <TouchableOpacity onPress={() => playPause(index)}>
+                    <AntDesign
+                      name={isPlayingArray[index] ? 'pausecircle' : 'play'}
+                      size={moderateScale(25)}
+                      color={'#000'}
+                    />
+                  </TouchableOpacity>
+
+                  <View style={styles.sliderView}>
+                    {isPlayingArray[index] ? (
+                      <Slider
+                        value={progress?.position}
+                        maximumValue={progress.duration}
+                        minimumValue={0}
+                        thumbStyle={{ width: 20, height: 20 }}
+                        thumbTintColor={'black'}
+                        minimumTrackTintColor={'black'}
+                        maximumTrackTintColor={'black'}
+                        onValueChange={async (value) => {
+                          await TrackPlayer.seekTo(value);
+                        }}
+                      />
+                    ) : (
+                      <Slider
+                        value={progressArray[index]?.position}
+                        minimumValue={0}
+                        thumbStyle={{ width: 20, height: 20 }}
+                        thumbTintColor={'black'}
+                        minimumTrackTintColor={'black'}
+                        maximumTrackTintColor={'black'}
+                        onValueChange={async (value) => await TrackPlayer.seekTo(value)}
+                      />
+                    )}
                   </View>
                 </View>
               </View>
-
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <TouchableOpacity onPress={() => playPause(index)}>
-                  <AntDesign
-                    name={isPlayingArray[index] ? 'pausecircle' : 'play'}
-                    size={moderateScale(25)}
-                    color={'#000'}
-                  />
-                </TouchableOpacity>
-
-                <View style={styles.sliderView}>
-                  {isPlayingArray[index] ? (
-                    <Slider
-                      value={progress.position}
-                      maximumValue={progress.duration}
-                      minimumValue={0}
-                      thumbStyle={{ width: 20, height: 20 }}
-                      thumbTintColor={'black'}
-                      minimumTrackTintColor={'black'}
-                      maximumTrackTintColor={'black'}
-                      onValueChange={async (value) => {
-                        await TrackPlayer.seekTo(value);
-                      }}
-                    />
-                  ) : (
-                    <Slider
-                      value={progressArray[index].position}
-                      minimumValue={0}
-                      thumbStyle={{ width: 20, height: 20 }}
-                      thumbTintColor={'black'}
-                      minimumTrackTintColor={'black'}
-                      maximumTrackTintColor={'black'}
-                      onValueChange={async (value) => await TrackPlayer.seekTo(value)}
-                    />
-                  )}
-                </View>
-              </View>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+            ))}
+          </ScrollView>
+        </View>
+      ) : (
+        <ActivityIndicator size="large" color="#000" />
+      )}
     </SafeAreaView>
   );
 };
@@ -153,7 +195,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     color: '#117a4c',
-    fontWeight:'700'
+    fontWeight: '700'
   },
   textStyle: {
     flex: 1,

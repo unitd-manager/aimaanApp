@@ -5,24 +5,24 @@ import EHeader from '../../../components/common/EHeader';
 import api from '../../../api/api';
 import HTMLView from 'react-native-htmlview';
 
-const QuranPlayer = () => {
-    const route = useRoute();
-    const navigation = useNavigation()
-    const [selectedItem, setSelectedItem] = React.useState();
+const Services = () => {
+  const route = useRoute();
+  const navigation = useNavigation()
+  const [selectedItem, setSelectedItem] = React.useState();
 
-    useEffect(()=>{
-        api
-        .get('/content/getAudioGallery')
-        .then((res) => {
-          setSelectedItem(res.data.data);
-        })
-        .catch((error) => {
-          console.log('Error fetching client details by ID:', error);
-        });
-    },[route.params.id])
-   
-// Conditional rendering based on the state of selectedItem
-if (selectedItem === undefined) {
+  useEffect(() => {
+    api
+      .post('/content/getContentBySectionId', { section_id: route.params.id })
+      .then((res) => {
+        setSelectedItem(res.data.data);
+      })
+      .catch((error) => {
+        console.log('Error fetching client details by ID:', error);
+      });
+  }, [route.params.id])
+
+  // Conditional rendering based on the state of selectedItem
+  if (selectedItem === undefined) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#0000ff" />
@@ -30,7 +30,7 @@ if (selectedItem === undefined) {
     );
   }
 
-// hide space and set image in about description 
+  // hide space and set image in about description 
   const renderNode = (node, index, siblings, parent, defaultRenderer) => {
 
     if (node.name === 'img') {
@@ -61,7 +61,7 @@ if (selectedItem === undefined) {
     if (node.name === 'li' && parent.name === 'ul') {
       return <Text key={index} style={{ color: '#000' }}>{'\u2022 '} {defaultRenderer(node.children, parent)} {'\n'}</Text>;
     }
-  
+
     if (node.name === 'li' && parent.name === 'ol') {
       const listNumber = index + 1;
       return <Text key={index} style={{ color: '#000' }}>{`${listNumber}. `}{defaultRenderer(node.children, parent)} {'\n'} </Text>;
@@ -74,17 +74,31 @@ if (selectedItem === undefined) {
         </Text>
       );
     }
+
+    if (node.name === 'h4') {
+      return (
+        <Text key={index} style={{ fontWeight: 'bold', color: '#000' }}>
+          {defaultRenderer(node.children, parent)}
+        </Text>
+      );
+    }
   };
 
-    return (
-        <>
-        <EHeader title={route.params.title} onPress={() => navigation.pop()} />
-        <ScrollView style={{paddingHorizontal:20}}>
-            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                <HTMLView value={selectedItem.description} renderNode={renderNode} />
-            </View>
-        </ScrollView>
-        </>
-    )
+  return (
+    <>
+      <EHeader title={route.params.title} onPress={() => navigation.pop()} />
+      <ScrollView style={{ paddingHorizontal: 20 }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, color: '#222', fontWeight: '700' }}>{selectedItem.title}</Text>
+          <HTMLView value={selectedItem.map((item, index) =>
+            `<h4><b>${index + 1}. ${item.title}</b></h4>
+            ${item.description}
+            \n`
+          )}
+            renderNode={renderNode} />
+        </View>
+      </ScrollView>
+    </>
+  )
 }
-export default QuranPlayer;
+export default Services;

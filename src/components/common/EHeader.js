@@ -16,14 +16,14 @@ const EHeader = props => {
 
   const goBack = () => navigation.goBack();
   return (
-    <View style={[localStyles.container, !!isHideBack && styles.pr10,{backgroundColor:'#f2f2f2'}]}>
+    <View style={[localStyles.container, !!isHideBack && styles.pr10,{backgroundColor:'#00541A'}]}>
       <View style={[styles.rowStart, styles.flex]}>
         {!isHideBack && (
           <TouchableOpacity style={styles.pr10} onPress={onPressBack || goBack}>
             <Feather
               name="arrow-left"
               size={moderateScale(26)}
-              color={colors.textColor}
+              color={colors.white}
             />
           </TouchableOpacity>
         )}
@@ -31,7 +31,7 @@ const EHeader = props => {
 
         <EText
           numberOfLines={1}
-          style={[styles.pr10, styles.mr10]}
+          style={[styles.pr10, styles.mr10,{color:colors.white}]}
           type={'B16'}>
           {title}
         </EText>
@@ -49,5 +49,6 @@ const localStyles = StyleSheet.create({
     ...styles.ph20,
     ...styles.pv15,
     ...styles.center,
+    ...styles.mb20
   },
 });

@@ -13,6 +13,11 @@ import Gallery from '../containers/tabbar/home/Gallery';
 import News from '../containers/tabbar/home/News';
 import Events from '../containers/tabbar/home/Events';
 import QuranPlayer from '../containers/tabbar/home/QuranPlayer';
+import Services from '../containers/tabbar/home/Services';
+import Articles from '../containers/tabbar/home/Articles';
+import Home from '../containers/tabbar/home/Home';
+import Resources from '../containers/tabbar/home/Resources';
+import Membership from '../containers/tabbar/home/Membership';
 
 export const StackRoute = {
   Splash,
@@ -29,5 +34,10 @@ export const StackRoute = {
   Gallery,
   News,
   Events,
-  QuranPlayer
+  QuranPlayer,
+  Services,
+  Articles,
+  Home,
+  Resources,
+  Membership
 };
