@@ -13,5 +13,10 @@ export const StackNav = {
   Gallery: 'Gallery',
   News: 'News',
   Events:'Events',
-  QuranPlayer: 'QuranPlayer'
+  QuranPlayer: 'QuranPlayer',
+  Services: 'Services',
+  Articles: 'Articles',
+  Home: 'Home',
+  Resources: 'Resources',
+  Membership: 'Membership'
 };

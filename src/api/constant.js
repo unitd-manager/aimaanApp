@@ -263,10 +263,38 @@ const listData = [
 },
 ];
 
+const HighestQualification = [
+  { id: '1',label:'Select Highest Qualification', value: 'Select Highest Qualification', },
+  { id: '2',label:'Secondary School (10th)', value: 'Secondary School (10th)',},
+  { id: '3',label:'High School (12th)', value: 'High School (12th)', }, 
+  { id: '4',label:'ITI', value: 'ITI', },
+  { id: '5',label:'Diploma', value: 'Diploma',},
+  { id: '6',label:'B.A., B.Sc, B.Com, BBA, etc', value: 'B.A., B.Sc, B.Com, BBA, etc', }, 
+  { id: '7',label:'B.E, B.Tech, B.Arch', value: 'B.E, B.Tech, B.Arch', },
+  { id: '8',label:'MBBS, MD, etc', value: 'MBBS, MD, etc',},
+  { id: '9',label:'M.A., M.Sc, M.Com, MBA, etc', value: 'M.A., M.Sc, M.Com, MBA, etc', }, 
+  { id: '10',label:'M.E, M.Tech, etc', value: 'M.E, M.Tech, etc', },
+  { id: '11',label:'Less than Secondary School', value: 'Less than Secondary School',},
+];
+
+// Get the current year
+const currentYear = new Date().getFullYear();
+    const allRecords = [];
+
+for (let year = 1950; year <= currentYear; year++) {
+  const object = {
+    label: year.toString(),
+    value: year.toString(),
+  };
+  allRecords?.push(object);
+}
+
 export {
   ProfileSetting,
   languageData,
   bannerData,
   listData,
-  menus
+  menus,
+  HighestQualification,
+  allRecords
 };
