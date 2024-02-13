@@ -6,12 +6,18 @@ import { moderateScale } from '../../common/constants';
 import api from '../../api/api';
 
 const PlayAudio = () => {
-
+  const PAGE_SIZE = 10;
   const [listData, setListData] = useState()
+  const [currentPage, setCurrentPage] = useState(1);
 
   const getMenus = () => {
     api
-      .get('/content/getAudioGallery')
+      .get('/content/getAudioGallery', {
+      params: {
+        page: currentPage,
+        pageSize: PAGE_SIZE,
+      },})
+      
       .then(res => {
         const serverPath = 'http://43.228.126.245/aimaanAPI/storage/uploads/';
         const audioData = res.data.data.map(item => ({
@@ -26,8 +32,18 @@ const PlayAudio = () => {
 
   };
   useEffect(() => {
-    getMenus();
-  }, []);
+    getMenus(currentPage);
+  }, [currentPage]);
+
+  const onEndReached = () => {
+    const totalItems = listData.length;
+    const totalPages = Math.ceil(totalItems / PAGE_SIZE);
+
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
 
   const progress = useProgress();
 
@@ -119,8 +135,18 @@ const PlayAudio = () => {
     <SafeAreaView style={{ flex: 1 }}>
       {listData ? (
         <View style={styles.container}>
-          <ScrollView style={{ flex: 1 }}>
-            {listData?.map((item, index) => (
+          <ScrollView style={{ flex: 1 }}
+            onScroll={({ nativeEvent }) => {
+              const yOffset = nativeEvent.contentOffset.y;
+              const height = nativeEvent.layoutMeasurement.height;
+              const contentHeight = nativeEvent.contentSize.height;
+
+              if (yOffset + height >= contentHeight - 20) {
+                onEndReached();
+              }
+            }}
+            scrollEventThrottle={400}>
+            {listData.slice(0, currentPage * PAGE_SIZE)?.map((item, index) => (
               <View style={styles.singleContainer} key={index}>
                 <View style={styles.cardTopRow}>
                   <View style={styles.halrow}>
@@ -176,6 +202,9 @@ const PlayAudio = () => {
               </View>
             ))}
           </ScrollView>
+          <Text style={styles.pageNumberText}>
+            Page {currentPage} of {Math.ceil(listData.length / PAGE_SIZE)}
+          </Text>
         </View>
       ) : (
         <ActivityIndicator size="large" color="#000" />
@@ -196,6 +225,12 @@ const styles = StyleSheet.create({
   titleText: {
     color: '#117a4c',
     fontWeight: '700'
+  },
+  pageNumberText: {
+    textAlign:'center',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#532c6d',
   },
   textStyle: {
     flex: 1,
