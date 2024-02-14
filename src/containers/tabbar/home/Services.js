@@ -1,104 +1,175 @@
-import React, { useEffect } from 'react';
-import { ScrollView, Text, View, ActivityIndicator, Image } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
+import { useRoute } from '@react-navigation/native';
+import LinearGradient from 'react-native-linear-gradient';
 import EHeader from '../../../components/common/EHeader';
 import api from '../../../api/api';
-import HTMLView from 'react-native-htmlview';
+import AD from 'react-native-vector-icons/AntDesign';
+import AboutCategoryDetail from './AboutCategoryDetail';
 
-const Services = () => {
+const ListFlat = () => {
   const route = useRoute();
-  const navigation = useNavigation()
-  const [selectedItem, setSelectedItem] = React.useState();
+  const [manitha, setManitha] = useState([]);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [detailview, setDetailView] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
 
   useEffect(() => {
-    api
-      .post('/content/getContentBySectionId', { section_id: route.params.id })
+    api.post('/category/getSectionsCategoryAboutUs', { section_id: route.params.id })
+      .then((res) => {
+        setManitha(res.data.data);
+      })
+      .catch((error) => {
+        console.log('Error fetching categories:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const fetchSubCategories = async () => {
+      try {
+        const promises = manitha.map(async category => {
+          const response = await api.post('/subcategory/getSubCategoryByCategoryId', { category_id: category.category_id });
+          return response.data.data;
+        });
+        const subCategories = await Promise.all(promises);
+        setSelectedItems(subCategories.flat());
+      } catch (error) {
+        console.log('Error fetching sub-categories:', error);
+      }
+    };
+
+    fetchSubCategories();
+  }, [manitha]);
+
+  const handleItemPress = (id) => {
+    api.post('/content/getDetailContent', { section_id: route.params.id, category_id: id })
       .then((res) => {
         setSelectedItem(res.data.data);
+        setDetailView(true);
       })
       .catch((error) => {
         console.log('Error fetching client details by ID:', error);
       });
-  }, [route.params.id])
+  };
 
-  // Conditional rendering based on the state of selectedItem
-  if (selectedItem === undefined) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+  const onDismiss = async () => {
+    setDetailView(false);
   }
 
-  // hide space and set image in about description 
-  const renderNode = (node, index, siblings, parent, defaultRenderer) => {
-
-    if (node.name === 'img') {
-      const width = node.attribs.width || 300;
-      const height = node.attribs.height || 300;
-
-      const { src } = node.attribs;
-
-      return (
-        <View key={index} style={{ flexDirection: 'row', justifyContent: 'center' }}>
-          <Image
-            source={{ uri: src }}
-            style={{ width: Number(width), height: Number(height), resizeMode: 'contain' }}
-          />
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.container}>
+        <View style={styles.itemContainer}>
+          <LinearGradient
+            style={styles.item}
+            colors={['#fff', '#fff']}
+            start={{ x: 0, y: 0.2 }}
+            end={{ x: 1.5, y: 0.2 }}
+          >
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => handleItemPress(item.category_id)}>
+                <AD style={styles.arrowIcon} name="rightcircle" size={22} color="#532c6d" />
+                <Text style={styles.categoryTitle}>{item.category_title}</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView>
+              {selectedItems.map(subItem => {
+                if (subItem.category_id === item.category_id) {
+                  return (
+                    <TouchableOpacity key={subItem.sub_category_id} style={styles.subItem} onPress={() => handleItemPress(item.category_id)}>
+                      <AD style={styles.subArrowIcon} name="rightcircle" size={18} color="#532c6d" />
+                      <Text style={styles.subCategoryTitle}>{subItem.sub_category_title}</Text>
+                    </TouchableOpacity>
+                  );
+                }
+              })}
+            </ScrollView>
+          </LinearGradient>
         </View>
-      );
-    }
-
-    if (node.name === 'p' && node.children && node.children.length > 0 && node.children[0].type === 'text' && node.children[0].data === '\u00a0') {
-      return null;
-    }
-
-    if (node.name === 'p') {
-      // Remove margin and padding for paragraphs
-      return <Text key={index} style={{ margin: 0, padding: 0, color: '#000' }}>{defaultRenderer(node.children, parent)}</Text>;
-    }
-
-    if (node.name === 'li' && parent.name === 'ul') {
-      return <Text key={index} style={{ color: '#000' }}>{'\u2022 '} {defaultRenderer(node.children, parent)} {'\n'}</Text>;
-    }
-
-    if (node.name === 'li' && parent.name === 'ol') {
-      const listNumber = index + 1;
-      return <Text key={index} style={{ color: '#000' }}>{`${listNumber}. `}{defaultRenderer(node.children, parent)} {'\n'} </Text>;
-    }
-
-    if (node.name === 'h4') {
-      return (
-        <Text key={index} style={{ fontWeight: 'bold', color: '#000' }}>
-          {defaultRenderer(node.children, parent)}
-        </Text>
-      );
-    }
-
-    if (node.name === 'h4') {
-      return (
-        <Text key={index} style={{ fontWeight: 'bold', color: '#000' }}>
-          {defaultRenderer(node.children, parent)}
-        </Text>
-      );
-    }
+        <AboutCategoryDetail detailview={detailview} setDetailView={setDetailView} singleDetail={selectedItem} onDismiss={onDismiss}></AboutCategoryDetail>
+      </View>
+    );
   };
 
   return (
     <>
-      <EHeader title={route.params.title} onPress={() => navigation.pop()} />
-      <ScrollView style={{ paddingHorizontal: 20 }}>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, color: '#222', fontWeight: '700' }}>{selectedItem.title}</Text>
-          <HTMLView value={selectedItem.map((item, index) =>
-            `<h4><b>${index + 1}. ${item.title}</b></h4>
-            ${item.description}
-            \n`
-          )}
-            renderNode={renderNode} />
-        </View>
-      </ScrollView>
+      <EHeader title={route.params.title} />
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={manitha}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.category_id.toString()}
+          contentContainerStyle={{ paddingBottom: 120 }}
+        />
+      </SafeAreaView>
     </>
   )
 }
-export default Services;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  itemContainer: {
+    marginVertical: 15,
+    marginHorizontal: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 20,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 30,
+    elevation: 10,
+  },
+  item: {
+    borderRadius: 8,
+    padding: 20,
+    height:270,
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  arrowIcon: {
+    marginRight: 10,
+    marginTop:10
+  },
+  categoryTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#222',
+    marginLeft:30,
+    marginTop:-25
+  },
+  subItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginLeft:20
+  },
+  subArrowIcon: {
+    marginRight: 10,
+  },
+  subCategoryTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#222',
+  },
+});
+
+export default ListFlat;
