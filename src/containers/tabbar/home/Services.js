@@ -14,13 +14,16 @@ import EHeader from '../../../components/common/EHeader';
 import api from '../../../api/api';
 import AD from 'react-native-vector-icons/AntDesign';
 import AboutCategoryDetail from './AboutCategoryDetail';
+import AboutSubCategoryDetail from './AboutSubCategoryDetail';
 
 const ListFlat = () => {
   const route = useRoute();
   const [manitha, setManitha] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [detailview, setDetailView] = useState(false);
+  const [detailviewSub, setDetailViewSub] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItemSub, setSelectedItemSub] = useState([]);
 
   useEffect(() => {
     api.post('/category/getSectionsCategoryAboutUs', { section_id: route.params.id })
@@ -60,8 +63,22 @@ const ListFlat = () => {
       });
   };
 
+  const handleItemSub = (id) => {
+    api.post('/content/getSubContent', { sub_category_id: id })
+      .then((res) => {
+        setSelectedItemSub(res.data.data);
+        setDetailViewSub(true);
+      })
+      .catch((error) => {
+        console.log('Error fetching client details by ID:', error);
+      });
+  };
+
   const onDismiss = async () => {
     setDetailView(false);
+  }
+  const onDismissSub = async () => {
+    setDetailViewSub(false);
   }
 
   const renderItem = ({ item }) => {
@@ -83,8 +100,11 @@ const ListFlat = () => {
             <ScrollView>
               {selectedItems.map(subItem => {
                 if (subItem.category_id === item.category_id) {
+                 
                   return (
-                    <TouchableOpacity key={subItem.sub_category_id} style={styles.subItem} onPress={() => handleItemPress(item.category_id)}>
+                    
+                    <TouchableOpacity key={subItem.sub_category_id} style={styles.subItem} onPress={() => {handleItemSub(subItem.sub_category_id); console.log('SubId',subItem.sub_category_id)}}>
+                      
                       <AD style={styles.subArrowIcon} name="rightcircle" size={18} color="#532c6d" />
                       <Text style={styles.subCategoryTitle}>{subItem.sub_category_title}</Text>
                     </TouchableOpacity>
@@ -95,6 +115,7 @@ const ListFlat = () => {
           </LinearGradient>
         </View>
         <AboutCategoryDetail detailview={detailview} setDetailView={setDetailView} singleDetail={selectedItem} onDismiss={onDismiss}></AboutCategoryDetail>
+        <AboutSubCategoryDetail detailviewSub={detailviewSub} setDetailViewSub={setDetailViewSub} selectedItemSub={selectedItemSub} onDismissSub={onDismissSub}></AboutSubCategoryDetail>
       </View>
     );
   };
